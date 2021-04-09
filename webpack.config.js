@@ -10,6 +10,9 @@ module.exports = {
   devServer: {
     contentBase: './dist',
   },
+  resolve: {
+    extensions: ['.ts', '.js', '.json']
+  },  
   module: {
     rules: [
       {
