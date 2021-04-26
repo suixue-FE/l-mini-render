@@ -36,7 +36,7 @@ class Parser{
   }
   // 当前位置的开头
   starts_with_point(str:string):boolean {
-    return this.input.startsWith("</",this.pos)
+    return this.input.startsWith(str,this.pos)
   }
 
   // 选中某种字符
@@ -49,7 +49,8 @@ class Parser{
   }
   // 匹配空字符
   check_str_empty(){
-    this.check_str((str)=>str===' ')
+    const reg = /\s/
+    this.check_str((str)=>reg.test(str))
   }
 
   // 解析 标签 或者 属性名 (就是匹配一串字母、数字的字符串)
@@ -70,14 +71,14 @@ class Parser{
       this.check_str_empty()
       let [name, value] = this.parse_attrs()
       obj[name] = value
-      console.log(this.next_char());
+      // console.log(this.next_char());
     }
     return obj
   }
   // 解析参数-内部参数
   parse_attrs():Array<string>{
     let name = this.parse_tag_name();
-    console.log(name);
+    // console.log(name);
     if (this.next_char_skip()!="=") {
       throw new Error("标签内属性设置无‘=’")
     }
@@ -141,7 +142,7 @@ class Parser{
     while (!this.is_over()&&!this.starts_with_point("</")){
       this.check_str_empty()
       const value = this.parse_node()
-      console.log(value);
+      // console.log(value);
       nodesArr.push(value)
     }
     return nodesArr
