@@ -3,7 +3,6 @@ import * as dom from './dom'
 export function parseHtml(html: string):dom.Node{
   // debugger
   let nodes = new Parser(0,html).parse_nodes()
-  console.log(nodes);
   
   if(nodes.length==1){
     return nodes[0]
@@ -79,6 +78,8 @@ class Parser{
   parse_attrs():Array<string>{
     let name = this.parse_tag_name();
     // console.log(name);
+    // console.log(this.input[this.pos],this.input[this.pos+1],this.input[this.pos+2],this.pos);
+    
     if (this.next_char_skip()!="=") {
       throw new Error("标签内属性设置无‘=’")
     }
@@ -103,6 +104,10 @@ class Parser{
   // 解析一个节点
   parse_node():dom.Node{
     if (this.next_char()=="<") {
+      // console.log(this.parse_ele_node());
+    console.log(this.input.slice(this.pos,this.pos+4));
+      
+      
       return this.parse_ele_node()
     }else{
       return this.parse_text_node()
@@ -139,11 +144,18 @@ class Parser{
   // 解析一组节点
   parse_nodes():Array<dom.Node>{
     let nodesArr = []
-    while (!this.is_over()&&!this.starts_with_point("</")){
-      this.check_str_empty()
-      const value = this.parse_node()
-      // console.log(value);
-      nodesArr.push(value)
+    // while (!this.is_over()&&!this.starts_with_point("</")){
+    //   this.check_str_empty()
+    //   const value = this.parse_node()
+    //   // console.log(value);
+    //   nodesArr.push(value)
+    // }
+    while(1){
+      this.check_str_empty();
+      if (this.is_over() || this.starts_with_point("</")) {
+          break;
+      }
+      nodesArr.push(this.parse_node());
     }
     return nodesArr
   }

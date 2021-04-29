@@ -1,41 +1,39 @@
 // 样式规则
-interface StyleSheet {
+export interface StyleSheet {
   rules:Array<Rules>
 }
-interface Rules{
+export interface Rules{
   selectors:Array<Selector>, // 选择器
   declarations:Array<Declaration<string|ColorValue>> // 描述
 }
 
 // 选择器（id、类、标签）
-class Selector {
+export class Selector {
   Simple:SimpleSelector;
   constructor(Simple:SimpleSelector){
     this.Simple = Simple
   }
   // 权重
-  specificity(Simple:SimpleSelector):Array<number>{
-    let result:Array<number> = [0,0,0]
-    result[0] = Simple.id.length
-    result[1] = Simple.class.length
-    result[2] = Simple.tag_name.length
+  specificity():number{
+    let result = 0
+    result = this.Simple.id.length*100+this.Simple.class.length*10+this.Simple.tag_name.length
     return result
   }
 }
 
 
-interface SimpleSelector{
+export interface SimpleSelector{
   tag_name: Array<string>,
   id:Array<string>,
   class:Array<string>
 }
 
 // 属性值
-interface Declaration<T>{
+export interface Declaration<T>{
   name:string,
   value:T
 }
-interface ColorValue {
+export interface ColorValue {
   r: number,
   g: number,
   b: number,

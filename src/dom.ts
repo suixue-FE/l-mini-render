@@ -28,7 +28,7 @@ export class ElementData {
     return this.attributes['id']
   }
   classGet(){
-    return this.attributes["class"]??[]
+    return this.attributes?.["class"]?.split(' ')||[]
   }
 }
 
