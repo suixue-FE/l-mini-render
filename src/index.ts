@@ -54,10 +54,10 @@ head {
   width: 500px;
 }`
 const pCss = parseCss(cssStr)
-console.log(pDom,pCss);
+// console.log(pDom,pCss);
 
 const pStyle = get_style_tree(pDom,pCss)
-console.log(pStyle);
+// console.log(pStyle);
 
 const viewport =  defaultDimensions()
 viewport.content.width  = 800.0;

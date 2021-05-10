@@ -285,7 +285,7 @@ function build_layout_tree(style_node:StyleNode):LayoutBox{
  * @param restNums 所有参数
  * @returns 所有参数的和
  */
-function add_px(...restNums:string[]){
+function add_px(...restNums:string[]){ 
   return restNums.reduce((prev,next)=>{
     let nextNums:number 
     if(next=='auto'){
