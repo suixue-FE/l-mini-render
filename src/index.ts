@@ -1,6 +1,7 @@
 import {parseHtml} from './html'
 import {parseCss} from './css'
 import {get_style_tree} from './style'
+import {layout_tree,defaultDimensions} from './layout'
 
 const str = `<html>
 <head>
@@ -57,3 +58,10 @@ console.log(pDom,pCss);
 
 const pStyle = get_style_tree(pDom,pCss)
 console.log(pStyle);
+
+const viewport =  defaultDimensions()
+viewport.content.width  = 800.0;
+viewport.content.height = 600.0;
+const pLayout = layout_tree(pStyle,viewport)
+console.log(pLayout);
+
