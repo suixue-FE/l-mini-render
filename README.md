@@ -5,10 +5,13 @@
 ``
 npm i
 ``
-之后
+
+
+
 ``
 npm run dev
 ``
+
 之后会根据html和css代码生成一个对应格式的test.png
 
 ## 语法支持
