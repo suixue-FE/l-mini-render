@@ -16,10 +16,8 @@ namespace PaintingDraw{
       this.rect = rect
     }
     drawItem(context:CanvasRenderingContext2D){
-      // console.log(context);
       
       context.fillStyle = this.color?parseFloat(this.color):'transparent'
-      // console.log(this.rect,3);
       
       const rect = this.rect
       context.fillRect(rect.x, rect.y, rect.width, rect.height)
@@ -35,8 +33,6 @@ namespace PaintingDraw{
       this.rect = rect
     }
     drawItem(context:CanvasRenderingContext2D){
-      // console.log(this.rect);
-      // console.log(this.color);
     }
   }
 }
@@ -45,16 +41,15 @@ export function paint(layout_root:LayoutBox, bounds:Dimensions):Buffer{
   let display_list = build_display_list(layout_root);
   
   const canvas:Canvas = createCanvas(bounds.content.width, bounds.content.height)
-  // console.log(canvas);
+  console.log(canvas);
   
   
   const context:CanvasRenderingContext2D = canvas.getContext('2d')
-  context.fillStyle = '#fff'
-  context.fillRect(0, 0, bounds.content.width, bounds.content.height)
+  // context.fillStyle = '#fff'
+  // context.fillRect(0, 0, bounds.content.width, bounds.content.height)
   for (const drawClass of display_list) {
     drawClass.drawItem(context)
   }
-  // console.log(context);
   
   return canvas.toBuffer('image/png')
 }

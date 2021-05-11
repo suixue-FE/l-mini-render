@@ -51,6 +51,7 @@ head {
   margin: auto;
   margin-bottom: 20px;
   width: 500px;
+  background: #0000ff;
 }`
 const pCss = parseCss(cssStr)
 // console.log(pDom,pCss);
@@ -62,13 +63,10 @@ const viewport =  defaultDimensions()
 viewport.content.width  = 1000;
 viewport.content.height = 1000;
 const pLayout = layout_tree(pStyle,viewport)
-// console.log(viewport);
-// console.log(JSON.stringify(pLayout, null, 2));
 const viewport2 =  defaultDimensions()
-viewport2.content.width  = 2000;
-viewport2.content.height = 2000;
+viewport2.content.width  = 1000;
+viewport2.content.height = 1000;
 const buffer = paint(pLayout,viewport2)
-// console.log(pLayout);
 
 writeFileSync('./test.png', buffer)
 // 
