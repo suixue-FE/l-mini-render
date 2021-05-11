@@ -17,7 +17,6 @@ const str = `<html>
   </p>
 </div>
 </html>`
-const pDom = parseHtml(str)
 
 const cssStr = `* {
   display: block;
@@ -53,22 +52,26 @@ head {
   width: 500px;
   background: #0000ff;
 }`
-const pCss = parseCss(cssStr)
-// console.log(pDom,pCss);
 
-const pStyle = get_style_tree(pDom,pCss)
-// console.log(pStyle);
+export function render_main(htmlStr,cssStr):Buffer{
+  const pDom = parseHtml(htmlStr)
+  const pCss = parseCss(cssStr)
+  
+  const pStyle = get_style_tree(pDom,pCss)
+  
+  const viewport =  defaultDimensions()
+  viewport.content.width  = 1000;
+  viewport.content.height = 1000;
+  const pLayout = layout_tree(pStyle,viewport)
+  const viewport2 =  defaultDimensions()
+  viewport2.content.width  = 1000;
+  viewport2.content.height = 1000;
+  const buffer = paint(pLayout,viewport2)
+  return buffer
+}
 
-const viewport =  defaultDimensions()
-viewport.content.width  = 1000;
-viewport.content.height = 1000;
-const pLayout = layout_tree(pStyle,viewport)
-const viewport2 =  defaultDimensions()
-viewport2.content.width  = 1000;
-viewport2.content.height = 1000;
-const buffer = paint(pLayout,viewport2)
 
-writeFileSync('./test.png', buffer)
+writeFileSync('./test.png', render_main(str,cssStr))
 // 
 
 

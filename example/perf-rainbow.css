@@ -1,0 +1,15 @@
+head {
+  display: none;
+}
+* {
+  display: block;
+  padding: 12px;
+}
+
+.a { background: #ff0000; padding: 12px;}
+.b { background: #ffa500; padding: 12px; }
+.c { background: #ffff00; padding: 12px; }
+.d { background: #008000; padding: 12px;}
+.e { background: #0000ff; padding: 12px;}
+.f { background: #4b0082; padding: 12px; }
+.g { background: #800080; padding: 12px;}

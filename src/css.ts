@@ -113,6 +113,8 @@ class Parser{
       }else if(nextStr=='{'){
         break
       }else{
+        console.log(this.pos ,this.input.slice(this.pos,this.pos+10));
+        
         throw new Error('类型选择器编排格式错误')
       }
       this.check_str_empty()
