@@ -16,5 +16,9 @@ npm run dev
 
 ## 语法支持
 color只支持16进制写法
+
 margin、padding、boder等不支持同时指定多个
+
 暂未支持文字
+
+暂未支持inline布局
