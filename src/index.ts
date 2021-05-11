@@ -2,7 +2,8 @@ import {parseHtml} from './html'
 import {parseCss} from './css'
 import {get_style_tree} from './style'
 import {layout_tree,defaultDimensions} from './layout'
-
+import {paint} from './painting'
+import {writeFileSync} from 'fs'
 const str = `<html>
 <head>
   <title>Test</title>
@@ -27,9 +28,6 @@ span {
 }
 
 html {
-  width: 600px;
-  padding: 10px;
-  border-width: 1px;
   margin: auto;
   background: #ffffff;
 }
@@ -39,17 +37,18 @@ head {
 }
 
 .outer {
+  width:600px;
   background: #00ccff;
   border-color: #666666;
   border-width: 2px;
   margin: 50px;
-  padding: 50px;
 }
 
 .inner {
   border-color: #cc0000;
   border-width: 4px;
   height: 100px;
+  margin: auto;
   margin-bottom: 20px;
   width: 500px;
 }`
@@ -60,8 +59,19 @@ const pStyle = get_style_tree(pDom,pCss)
 // console.log(pStyle);
 
 const viewport =  defaultDimensions()
-viewport.content.width  = 800.0;
-viewport.content.height = 600.0;
+viewport.content.width  = 1000;
+viewport.content.height = 1000;
 const pLayout = layout_tree(pStyle,viewport)
-console.log(pLayout);
+// console.log(viewport);
+// console.log(JSON.stringify(pLayout, null, 2));
+const viewport2 =  defaultDimensions()
+viewport2.content.width  = 2000;
+viewport2.content.height = 2000;
+const buffer = paint(pLayout,viewport2)
+// console.log(pLayout);
 
+writeFileSync('./test.png', buffer)
+// 
+
+
+// console.log(111);

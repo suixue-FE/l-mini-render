@@ -24,7 +24,7 @@ export class Dimensions{
     return this.border_box().expanded_by(this.margin)
   }
 }
-class Rect{
+export class Rect{
   x: number
   y: number
   width: number
@@ -37,12 +37,13 @@ class Rect{
   }
   // 用来加上外边之后计算真实的xy
   expanded_by(edge: EdgeSizes):Rect {
-    return new Rect(
+    const rect =  new Rect(
       this.x - edge.left,
       this.y - edge.top,
       this.width + edge.left + edge.right,
       this.height + edge.top + edge.bottom,
     )
+    return rect
   }
 }
 interface EdgeSizes{
@@ -51,17 +52,20 @@ interface EdgeSizes{
   top: number,
   bottom: number,
 }
-const defaultRect = new Rect(0, 0, 0, 0)
-const defaultEdgeSizes:EdgeSizes = {
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0}
+let defaultRect=():Rect => new Rect(0, 0, 0, 0)
+const defaultEdgeSizes=():EdgeSizes=> {
+  return {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0
+  }
+}
 export function defaultDimensions():Dimensions{
-  return new Dimensions(defaultRect,defaultEdgeSizes,defaultEdgeSizes,defaultEdgeSizes)
+  return new Dimensions(defaultRect(),defaultEdgeSizes(),defaultEdgeSizes(),defaultEdgeSizes())
 }  
 // 布局树的节点
-class LayoutBox{
+export class LayoutBox{
   dimensions:Dimensions // 盒模型
   box_type:BoxType // 盒子类型
   children:Array<LayoutBox>
@@ -98,6 +102,8 @@ class LayoutBox{
   }
   // 块模式布局
   layout_block(containing_block: Dimensions):void {
+    // console.log(containing_block);
+    
     // 计算块宽度（宽度取决于父节点，所以先计算宽度在计算子节点）
     this.calculate_block_width(containing_block)
     // 计算块的位置
@@ -106,9 +112,13 @@ class LayoutBox{
     this.calculate_block_children()
     // 计算块高度（高度取决于子节点，所以先计算子节点之后才能处理高度）
     this.calculate_block_hight()
+    // child.dimensions
+    // console.log(this.dimensions);
+    
   }
   // 计算宽度
   calculate_block_width(containing_block: Dimensions){
+    
     if(this.style_node){
       let style = this.style_node
 
@@ -122,7 +132,8 @@ class LayoutBox{
       let padding_right = style.lookup("padding-right", "padding", '0');
 
       let width = style.value("width") || 'auto'
-
+      
+      
       let total = add_px(
         margin_left as string,
         margin_right as string,
@@ -171,10 +182,15 @@ class LayoutBox{
           }
         }
       }
+      // console.log(containing_block.content.width);
+    
       // 盒模型开始赋值
       let di = this.dimensions;
+      // console.log(di);
+      
       di.content.width = Number(width)
 
+      // console.log(di.content.width,this.style_node.node.node_type);
       di.padding.left = Number(padding_left)
       di.padding.right =  Number(padding_right)
 
@@ -183,6 +199,8 @@ class LayoutBox{
 
       di.margin.left = Number(margin_left)
       di.margin.right = Number(margin_right)
+      // console.log(padding_left,padding_right,di,123);
+      
     }
   }
   // 计算位置
@@ -216,10 +234,9 @@ class LayoutBox{
   calculate_block_children(){
     // 直接把孩子递归，但是记得在递归过程中取高度出来
     const children = this.children,di=this.dimensions
-    let hight = 0
     for (const child of children) {
       child.layout(di);
-      hight+=child.dimensions.margin_box().height;
+      di.content.height+=child.dimensions.margin_box().height;
     }
   }
   // 计算高度
@@ -268,6 +285,8 @@ class LayoutBox{
 
 export function layout_tree(node:StyleNode, content_block:Dimensions):LayoutBox {
   // 保存初始块的高度，以计算百分比高度。
+  content_block.content.height = 0.0;
+
   let layout_box:LayoutBox = build_layout_tree(node);
   layout_box.layout(content_block);
   return layout_box
