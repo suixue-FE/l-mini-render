@@ -10,7 +10,10 @@ const str = `<html>
 </head>
 <div class="outer">
   <p class="inner">
-    Hello, <span id="name">world!</span>
+    Hello,world!
+  </p>
+  <p class="textTest">
+    Text Test
   </p>
   <p class="inner" id="bye">
     Goodbye!
@@ -42,7 +45,11 @@ head {
   border-width: 2px;
   margin: 50px;
 }
-
+.textTest{
+  background: #008000;
+  font-size:20px;
+  color:#f0f00f;
+}
 .inner {
   border-color: #cc0000;
   border-width: 4px;
@@ -51,6 +58,8 @@ head {
   margin-bottom: 20px;
   width: 500px;
   background: #0000ff;
+  font-size:24px;
+  color:#ffffff;
 }`
 
 export function render_main(htmlStr,cssStr):Buffer{
@@ -67,12 +76,11 @@ export function render_main(htmlStr,cssStr):Buffer{
   viewport2.content.width  = 1000;
   viewport2.content.height = 1000;
   const buffer = paint(pLayout,viewport2)
+  // console.log(JSON.stringify(pLayout,null,4));
   return buffer
+  
 }
 
 
+
 writeFileSync('./test.png', render_main(str,cssStr))
-// 
-
-
-// console.log(111);

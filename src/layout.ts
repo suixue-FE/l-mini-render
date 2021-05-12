@@ -78,6 +78,7 @@ export class LayoutBox{
       case BoxType.BlockNode:
       case BoxType.InlineBlockNode: 
       case BoxType.InlineNode:
+      case BoxType.TextNode:
         this.style_node = style_node
       break
       case BoxType.NoneBlock:
@@ -89,7 +90,8 @@ export class LayoutBox{
   layout(containing_block: Dimensions):void{
     switch(this.box_type){
       case BoxType.BlockNode:
-      case BoxType.InlineBlockNode: 
+      case BoxType.InlineBlockNode:
+      case BoxType.TextNode: 
         this.layout_block(containing_block)
       break
       case BoxType.InlineNode:
@@ -111,7 +113,15 @@ export class LayoutBox{
     // 计算子节点（计算宽度后计算子节点）
     this.calculate_block_children()
     // 计算块高度（高度取决于子节点，所以先计算子节点之后才能处理高度）
-    this.calculate_block_hight()
+    /// 第二轮，增加个文本节点的高度
+    if (this.box_type === BoxType.TextNode) {
+      // 文本节点的高度计算
+      this.calculate_Text_hight()
+    }else{
+      this.calculate_block_hight()
+    }
+    
+    
     // child.dimensions
     // console.log(this.dimensions);
     
@@ -199,7 +209,6 @@ export class LayoutBox{
 
       di.margin.left = Number(margin_left)
       di.margin.right = Number(margin_right)
-      // console.log(padding_left,padding_right,di,123);
       
     }
   }
@@ -249,11 +258,20 @@ export class LayoutBox{
       }
     }
   }
+
+  calculate_Text_hight(){
+    if (this.style_node&&this.style_node.value('font-size')) {
+      this.dimensions.content.height = Number(this.style_node.value('font-size'));
+    }else{
+      this.dimensions.content.height = 12
+    }
+  }
   // 放一个子节点进去
   pushChild(child_node:StyleNode){
     // if(child_node.display()===)
     switch(child_node.display()){
       case BoxType.BlockNode:
+      case BoxType.TextNode:
         this.children.push(build_layout_tree(child_node))
         break
       case BoxType.InlineNode:
@@ -293,7 +311,9 @@ export function layout_tree(node:StyleNode, content_block:Dimensions):LayoutBox 
 }
 
 function build_layout_tree(style_node:StyleNode):LayoutBox{
-  let root = new LayoutBox(style_node.display(),[],style_node)
+  let root = new LayoutBox(style_node.display(),[],
+  // 这一步主要是将子节点置空（我个人认为后面占用内存小）
+  new StyleNode(style_node.node,[],style_node.specified_values))
   style_node.children.forEach(child_node =>{
     root.pushChild(child_node)
   })

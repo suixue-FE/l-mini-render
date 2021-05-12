@@ -9,6 +9,7 @@ export enum BoxType {
   NoneBlock,
   InlineBlockNode,
   InlineNode,
+  TextNode
 }
 
 // 单个样式树节点
@@ -28,16 +29,20 @@ export class StyleNode{
   // 获取display属性
   display():BoxType{
     // return <string>this.value('display')
-    switch(this.value('display')){
-      case 'inline':
-        return BoxType.InlineNode
-      case 'inline-block':
-        return BoxType.InlineBlockNode
-      case 'none':
-        return BoxType.NoneBlock
-      default:
-        return BoxType.BlockNode
+    if (typeof this.node.node_type === 'string') {
+      return BoxType.TextNode
     }
+      switch(this.value('display')){
+        case 'inline':
+          return BoxType.InlineNode
+        case 'inline-block':
+          return BoxType.InlineBlockNode
+        case 'none':
+          return BoxType.NoneBlock
+        default:
+          return BoxType.BlockNode
+      }
+    
   }
   /**
    * 获取属性值，如果name找不到就找fallback_name，还没有就直接返回默认值value
@@ -55,12 +60,14 @@ interface ruleHight{
 }
 
 // 样式表
-export function get_style_tree(root:dom.Node, stylesheet:css.StyleSheet):StyleNode {
+export function get_style_tree(root:dom.Node, stylesheet:css.StyleSheet,parent:myHash<string|css.ColorValue>={}):StyleNode {
+  // 如果是文本节点就直接取父节点的样式
   let style_values:myHash<string|css.ColorValue> = 
-  typeof root.node_type !== 'string'?specified_values(root.node_type,stylesheet):
-  {}
+  typeof root.node_type !== 'string'?
+  specified_values(root.node_type,stylesheet):
+  parent
   let style_tree:StyleNode = new StyleNode(
-    root,root.children.map(node => get_style_tree(node,stylesheet)),style_values)
+    root,root.children.map(node => get_style_tree(node,stylesheet,style_values)),style_values)
   return style_tree
 }
 
