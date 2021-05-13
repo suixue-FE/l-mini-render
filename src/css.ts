@@ -130,6 +130,7 @@ class Parser{
     }
     // 当前不是最后
     while(!this.is_over()){
+      this.check_str_empty()
       const nextStr = this.next_char()
       if (nextStr === '#') {
         this.next_char_skip()

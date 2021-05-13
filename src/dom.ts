@@ -38,11 +38,7 @@ export function buildNode(name: string, attrs?: AttrMap,children?:Array<Node>):N
     children:[],
     node_type:''
   }
-  if(attrs){
-    nodeObj.node_type = new ElementData(name,attrs)
-  }else{
-    nodeObj.node_type = name
-  }
+  nodeObj.node_type=attrs?new ElementData(name,attrs): name
   nodeObj.children = children??[]
   return nodeObj
 }

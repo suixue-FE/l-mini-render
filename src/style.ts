@@ -113,17 +113,17 @@ function match_rules(elem:dom.ElementData,stylesheet:css.StyleSheet):Array<ruleH
  */
 function match_selector(selectors:Array<css.Selector>,element:dom.ElementData):number{
   return selectors.reduce((prev,selector)=>{
-    if(matches_simple_selector(selector.Simple,element)){
+    if(matches_simple_selector(selector.Simple,element)){ 
       return selector.specificity()+prev
     }
   },0)
 }
 
 function matches_simple_selector(simple:css.SimpleSelector,element:dom.ElementData):boolean{
-  const tag_name_has:boolean = simple.tag_name.includes(element.tag_name)
-  const id_arr:boolean = simple.id.includes(element.idGet())
-  const class_arr:boolean = simple.class.some(cl=>{
+  const tag_name_has:boolean = simple.tag_name.length===0||simple.tag_name.includes(element.tag_name)
+  const id_arr:boolean = simple.id.length===0||simple.id.includes(element.idGet())
+  const class_arr:boolean = simple.class.length===0||simple.class.some(cl=>{
     return element.classGet().includes(cl)
   })
-  return tag_name_has||id_arr||class_arr
+  return tag_name_has&&id_arr&&class_arr
 }

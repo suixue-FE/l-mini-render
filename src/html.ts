@@ -38,7 +38,12 @@ class Parser{
     return this.input.startsWith(str,this.pos)
   }
 
-  // 选中某种字符
+  /**
+   * 此函数是解析类的核心方法，根据传入的匹配函数来连续匹配符合某种规则的字符
+   * 既能获取符合规则的字符串，又能跳过指定字符串，后续解析大多基于此方法。
+   * @param test 匹配字符函数
+   * @returns 符合规则的连续字符
+   */
   check_str(test:(str:string)=>boolean):string {
     let result:string = ''
     while (!this.is_over() && test(this.next_char())) {
@@ -70,16 +75,12 @@ class Parser{
       this.check_str_empty()
       let [name, value] = this.parse_attrs()
       obj[name] = value
-      // console.log(this.next_char());
     }
     return obj
   }
   // 解析参数-内部参数
   parse_attrs():Array<string>{
     let name = this.parse_tag_name();
-    // console.log(name);
-    // console.log(this.input[this.pos],this.input[this.pos+1],this.input[this.pos+2],this.pos);
-    
     if (this.next_char_skip()!="=") {
       throw new Error("标签内属性设置无‘=’")
     }
@@ -104,10 +105,7 @@ class Parser{
   // 解析一个节点
   parse_node():dom.Node{
     if (this.next_char()=="<") {
-      // console.log(this.parse_ele_node());
-    console.log(this.input.slice(this.pos,this.pos+4));
-      
-      
+    // console.log(this.input.slice(this.pos,this.pos+4));
       return this.parse_ele_node()
     }else{
       return this.parse_text_node()
