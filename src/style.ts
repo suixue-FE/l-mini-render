@@ -114,7 +114,7 @@ function match_rules(elem:dom.ElementData,stylesheet:css.StyleSheet):Array<ruleH
 function match_selector(selectors:Array<css.Selector>,element:dom.ElementData):number{
   return selectors.reduce((prev,selector)=>{
     if(matches_simple_selector(selector.Simple,element)){ 
-      return selector.specificity()+prev
+      return (selector.specificity()||1)+prev
     }
   },0)
 }

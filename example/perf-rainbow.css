@@ -6,9 +6,9 @@ head {
   padding: 12px;
 }
 
-div .a { background: #ff0000; padding: 12px;}
-.b { background: #ffa500; padding: 12px; }
-.c { background: #ffff00; padding: 12px; }
+div .a { background: #ff0000;}
+.b { background: #ffa500;}
+.c { background: #ffff00;}
 .d { background: #008000; padding: 12px;}
 .e { background: #0000ff; padding: 12px;}
 .f { background: #4b0082; padding: 12px; }
