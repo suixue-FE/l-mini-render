@@ -1,6 +1,6 @@
 import {StyleNode,BoxType} from './style'
 
-// 盒模型
+// 盒模型，margin_box、border_box、padding_box、content等均为Rect类，可以直接得到大小、位置信息。
 export class Dimensions{
   // 相对于原点的位置,内容大小
   content:Rect
@@ -24,6 +24,7 @@ export class Dimensions{
     return this.border_box().expanded_by(this.margin)
   }
 }
+// 大小和位置的信息集
 export class Rect{
   x: number
   y: number
@@ -35,15 +36,15 @@ export class Rect{
     this.width = width
     this.height = height
   }
-  // 用来加上外边之后计算真实的xy
+  // 套壳子，比如，当前盒子是content盒子，传入padding，返回一个padding_box
+  // 根据Dimensions中的使用就很好理解了
   expanded_by(edge: EdgeSizes):Rect {
-    const rect =  new Rect(
+    return new Rect(
       this.x - edge.left,
       this.y - edge.top,
       this.width + edge.left + edge.right,
       this.height + edge.top + edge.bottom,
     )
-    return rect
   }
 }
 interface EdgeSizes{

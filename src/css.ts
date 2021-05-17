@@ -8,24 +8,21 @@ export interface Rules{
 }
 
 // 选择器（id、类、标签）
-export class Selector {
+export interface Selector {
   Simple:SimpleSelector;
-  constructor(Simple:SimpleSelector){
-    this.Simple = Simple
-  }
-  // 权重
-  specificity():number{
-    let result = 0
-    result = this.Simple.id.length*100+this.Simple.class.length*10+this.Simple.tag_name.length
-    return result
-  }
 }
 
 
-export interface SimpleSelector{
-  tag_name: Array<string>,
-  id:Array<string>,
+export class SimpleSelector{
+  tag_name: Array<string>
+  id:Array<string>
   class:Array<string>
+  constructor(tag_name: Array<string>,id:Array<string>,className:Array<string>){
+    this.tag_name = tag_name
+    this.id = id
+    this.class = className
+  }
+  specificity=():number=>this.id.length*100+this.class.length*10+this.tag_name.length
 }
 
 // 属性值
@@ -101,52 +98,41 @@ class Parser{
   // 解析选择器
   parse_selectors():Array<Selector>{
     let selectors:Array<Selector> = []
-    while (this.next_char()!='{'){
-      
+    this.check_str_empty()
+    selectors.push({Simple:this.parse_simple_selector()})
+    this.check_str_empty()
+    const nextStr = this.next_char()
+    if(nextStr=='{'){
       this.check_str_empty()
-      selectors.push(new Selector(this.parse_simple_selector()))
-      this.check_str_empty()
-      const nextStr = this.next_char()
-      if (nextStr==','){
-        this.next_char_skip()
-        this.check_str_empty()
-      }else if(nextStr=='{'){
-        break
-      }else{
-        console.log(this.pos ,this.input.slice(this.pos,this.pos+10));
-        
-        throw new Error('类型选择器编排格式错误')
-      }
-      this.check_str_empty()
+      return selectors
+    }else{
+      throw new Error('类型选择器编排格式错误')
     }
-    return selectors
   }
   // 解析单个选择器
   parse_simple_selector():SimpleSelector{
-    let selector:SimpleSelector = {
-      tag_name:[],
-      id:[],
-      class:[]
-    }
+    let tag_name=[]
+    let ids=[]
+    let className =[]
     // 当前不是最后
     while(!this.is_over()){
       this.check_str_empty()
       const nextStr = this.next_char()
       if (nextStr === '#') {
         this.next_char_skip()
-          selector.id.push(this.parse_identifier())
+        ids.push(this.parse_identifier())
       }else if(nextStr === '.'){
         this.next_char_skip()
-        selector.class.push(this.parse_identifier());
+        className.push(this.parse_identifier());
       }else if(nextStr === '*'){
         this.next_char_skip()
       }else if (valid_identifier_char(nextStr)){
-        selector.tag_name.push(this.parse_identifier())
+        tag_name.push(this.parse_identifier())
       }else{
         break
       }
     }
-    return selector
+    return new SimpleSelector(tag_name,ids,className)
   }
 
   // 解析描述组
@@ -169,27 +155,20 @@ class Parser{
   parse_declaration():Declaration<string|ColorValue>{
     this.check_str_empty()
     let prototype_name = this.parse_identifier() // 获取属性名
-    
-    
     this.check_str_empty()
-    // console.log(prototype_name,this.pos,this.next_char());
     const nextStr = this.next_char_skip()
-    
     if (nextStr==':') {
       this.check_str_empty()
       let value = this.parse_value()
       this.check_str_empty()
-      
       if (this.next_char_skip()==';') {
         return {
           name:prototype_name,
           value:value
         }
       }else{
-        
         throw new Error('css属性没有;关闭')
       }
-      
     }else{
       throw new Error('css属性语法错误')
     }

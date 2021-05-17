@@ -5,9 +5,6 @@ import {layout_tree,defaultDimensions} from './layout'
 import {paint} from './painting'
 import {writeFileSync} from 'fs'
 const str = `<html>
-<head>
-  <title>Test</title>
-</head>
 <div class="outer">
   <p class="inner">
     Hello,world!
@@ -63,10 +60,10 @@ head {
 }`
 
 export function render_main(htmlStr,cssStr):Buffer{
-  const pDom = parseHtml(htmlStr)
-  const pCss = parseCss(cssStr)
+  const parsed_dom = parseHtml(htmlStr)
+  const parsed_style_sheet = parseCss(cssStr)
   
-  const pStyle = get_style_tree(pDom,pCss)
+  const pStyle = get_style_tree(parsed_dom,parsed_style_sheet)
   
   const viewport =  defaultDimensions()
   viewport.content.width  = 1000;

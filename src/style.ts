@@ -114,7 +114,9 @@ function match_rules(elem:dom.ElementData,stylesheet:css.StyleSheet):Array<ruleH
 function match_selector(selectors:Array<css.Selector>,element:dom.ElementData):number{
   return selectors.reduce((prev,selector)=>{
     if(matches_simple_selector(selector.Simple,element)){ 
-      return (selector.specificity()||1)+prev
+      // 这里这个+1操作，是为了适配 * 选择器，在之前的css解析中，* 选择器的权重为0。
+      // 当总权重为0时会在下一步被过滤掉，所以多写一个+1，正式排序权重为上一步计算权重+1
+      return selector.Simple.specificity()+prev+1
     }
   },0)
 }
